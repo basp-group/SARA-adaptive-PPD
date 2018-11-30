@@ -24,8 +24,8 @@
             if flag_single_data_set
                param_block.pos = length(uw);
             end
-            out_block =util_antenna_based_block_sp_ar(uw,ant1,param_block);
-%            out_block =util_time_based_block_sp_ar(time,param_block);
+            %out_block =util_antenna_based_block_sp_ar(uw,ant1,param_block);
+            out_block =util_time_based_block_sp_ar(time,param_block);
             partition = out_block.partition;
         else
             partition = length(uw); % one block
