@@ -20,7 +20,7 @@ ant2 =double(ant2(ind>0));
 ant1=ant1(:);
 ant2=ant2(:);
 if ~exist('time')
-    time = [];
+    time = ones(size(u));
 else
 time =double(time(ind>0));
 end
