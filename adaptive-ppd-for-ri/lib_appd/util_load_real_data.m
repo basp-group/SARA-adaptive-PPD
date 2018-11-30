@@ -7,7 +7,6 @@ ind=(weights>0).*(flag==0);
 weights = sqrt(weights(ind>0));
 y_I=double(y_I(ind>0));
 
-% sigma_noise = 1.253*mad(y_V,0); %MAD estimator
 sigma_noise = sqrt(2);
 
 u =  uvw(:,1);
@@ -15,12 +14,9 @@ u =  u(ind>0);
 v = -uvw(:,2);
 v = v(ind>0);
 
-%ant1 =double(ant1(ind>0));
-%ant2 =double(ant2(ind>0));
-%ant1=ant1(:);
-%ant2=ant2(:);
 if ~exist('time')
     time = ones(size(u));
+    fprintf("\n Time information needed for data blocking!\n")
 else
     time =double(time(ind>0));
 end
