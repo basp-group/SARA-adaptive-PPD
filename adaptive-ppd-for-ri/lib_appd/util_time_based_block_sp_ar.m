@@ -204,7 +204,6 @@ for j =1:length(param.pos)-1
     end
     
 end
-output.partition=output.block ;
 if  verbose
     %     figure(1),plot(abs(output.block-param.size)./param.size,'d')
     output.meanBlkSz = floor(mean(output.block));
