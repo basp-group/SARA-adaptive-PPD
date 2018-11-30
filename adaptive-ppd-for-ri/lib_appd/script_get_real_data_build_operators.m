@@ -10,7 +10,7 @@
 
         %% load noisy real data
         
-        [yfull, uw, vw, sigma_noise, nWw,ant1,ant2,time] = util_load_real_data(visibility_file_name, param_real_data);
+        [yfull, uw, vw, sigma_noise, nWw,time] = util_load_real_data(visibility_file_name, param_real_data);
         
         
         %% compute weights for Projection into the ellipsoids
@@ -24,7 +24,6 @@
             if flag_single_data_set
                param_block.pos = length(uw);
             end
-            %out_block =util_antenna_based_block_sp_ar(uw,ant1,param_block);
             out_block =util_time_based_block_sp_ar(time,param_block);
             partition = out_block.partition;
         else
@@ -49,7 +48,7 @@
         
         %clear unnecessary vars at this stage
         clear uw vw u v  uvidx ;
-        clear ant1 ant2 time ;         
+        clear  time ;         
    
         % sparsity operator definition
         [Psi, Psit] = op_p_sp_wlt_basis(wlt_basis, nlevel, Ny, Nx);
