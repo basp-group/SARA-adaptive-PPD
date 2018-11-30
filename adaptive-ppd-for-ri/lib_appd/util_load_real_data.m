@@ -1,4 +1,4 @@
-function [y, uw, vw, sigma_noise, nW,ant1,ant2,time] = util_load_real_data(visibility_file_name, param)
+function [y, uw, vw, sigma_noise, nW,time] = util_load_real_data(visibility_file_name, param)
 
 load(visibility_file_name) % flag ; sigmas ; uvw; y_I; weights; time
 flag = flag(:);
@@ -15,14 +15,14 @@ u =  u(ind>0);
 v = -uvw(:,2);
 v = v(ind>0);
 
-ant1 =double(ant1(ind>0));
-ant2 =double(ant2(ind>0));
-ant1=ant1(:);
-ant2=ant2(:);
+%ant1 =double(ant1(ind>0));
+%ant2 =double(ant2(ind>0));
+%ant1=ant1(:);
+%ant2=ant2(:);
 if ~exist('time')
     time = ones(size(u));
 else
-time =double(time(ind>0));
+    time =double(time(ind>0));
 end
 
 % whitening the data: natural weighting
