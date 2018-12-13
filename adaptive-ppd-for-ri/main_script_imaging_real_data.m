@@ -2,6 +2,7 @@
 % The data used here are observations of the supernova remnant 3C391 using the VLA 
 % For more details please refer to following VLA tutorial
 % https://casaguides.nrao.edu/index.php/VLA_Continuum_Tutorial_3C391-CASA5.0.0
+%calibrated data can be found here https://casa.nrao.edu/Data/EVLA/3C391/EVLA_3C391_FinalCalibratedMosaicMS.tgz
 %% 
 clear; clc ; close all
 
