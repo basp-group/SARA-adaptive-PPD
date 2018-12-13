@@ -7,7 +7,7 @@ clear; clc ; close all
 
 try
         % set NUFFT path
-        irt= ['/irt/setup.m'];
+        irt= ['./irt/setup.m'];
         project  = './';
         run(irt)
 end
@@ -73,8 +73,8 @@ param_nnls.rel_obj = 5e-5; % stopping criterion
 param_nnls.max_iter = 500; % max number of iterations
 param_nnls.sol_steps = [inf]; % saves images at the given iterations
 param_nnls.beta = 1;
-epsVect = zeros(1,length(out_block.blockNumber));
-for i =1:(out_block.blockNumber)
+epsVect = zeros(1,length(blockStruct.blockNumber));
+for i =1:(blockStruct.blockNumber)
 [result_nnls.sol{i}, result_nnls.L2_v{i}] = solver_fb_nnls(y{i}, @(x) T{i} * A(x),@(x) At((T{i})' * x),param_nnls);
 epsVect(i)  = result_nnls.L2_v{i}(end);
 end
