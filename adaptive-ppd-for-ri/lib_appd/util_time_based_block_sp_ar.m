@@ -1,7 +1,7 @@
 function output =util_time_based_block_sp_ar(time,param)
 
 if ~isfield(param,'verbose')
-    verbose =1;
+    verbose =0;
 else
     verbose =param.verbose;
 end
@@ -78,8 +78,8 @@ for j =1:length(param.pos)-1
         
         if isempty(scanIdx)
             %% No time scans identified
-            fprintf('\nINFO:No time scans identified')
-            fprintf('\n--> splitting by equal nbr of snapshots')
+            %fprintf('\nINFO:No time scans identified')
+            %fprintf('\n--> splitting by equal nbr of snapshots')
             approxNbrSnapshotsPerScan =  floor(snapshotsNbr/approxBlkNbr);
             %creating vect. of scans i.e. collection of snapshots (vect. with idx of first
             %snapshot in the scan)
@@ -110,9 +110,9 @@ for j =1:length(param.pos)-1
             
         else
             %% time scans detected
-            fprintf('\nINFO: %d Time scans detected',length(scanIdx)+1)
+            %fprintf('\nINFO: %d Time scans detected',length(scanIdx)+1)
             initScanStartingSnap = [1 scanIdx+1];
-            fprintf('--> Initial blocking based on scans')
+            %fprintf('--> Initial blocking based on scans')
             %/ init partitionning
             initBlocks =zeros(length(initScanStartingSnap),1);
             for idBlk=1:length(initScanStartingSnap)-1
@@ -127,7 +127,7 @@ for j =1:length(param.pos)-1
                 %block is a priority
                 
                 flag_scan_merge =1;
-                fprintf('\nINFO: average scan size is %d --> attempt to merge',meanScanSz)
+                %fprintf('\nINFO: average scan size is %d --> attempt to merge',meanScanSz)
                 nbrScans2Merge = 1+floor(BlkSZ/meanScanSz);
                 %/ adjusting snapshots step
                 if  meanScanSz*(nbrScans2Merge+1)< maxBlkSz
@@ -140,10 +140,10 @@ for j =1:length(param.pos)-1
                 %/
                 scanStartingSnap=initScanStartingSnap(1:nbrScans2Merge:end);
                 if nbrScans2Merge ==1
-                    fprintf('\nWarning: Merge cancelled --> scans are too large to merge!')
+                  %  fprintf('\nWarning: Merge cancelled --> scans are too large to merge!')
                     flag_scan_merge =0;
                 else
-                    fprintf('--> successful!')
+                  %  fprintf('--> successful!')
                 end
                 %/
                 
@@ -161,7 +161,7 @@ for j =1:length(param.pos)-1
                 end
                 %/
             else
-                fprintf("--> adopted\n")
+               % fprintf("--> adopted\n")
                 Blocks = initBlocks;
                 flag_scan_merge =0;
                 BlkSZ = param.size;
