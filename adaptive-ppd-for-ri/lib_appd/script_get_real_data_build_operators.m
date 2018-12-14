@@ -36,7 +36,7 @@
         %% measurement operator and sparsity operator initialization 
         fprintf('Initializing the NUFFT operator\n\n');
         tstart = tic;
-        [A, At, T, W, Gw] = op_p_nufft([v u], [Ny Nx], [Ky Kx], [oy*Ny ox*Nx], [Ny/2 Nx/2], nW);
+        [A, At, T, W, Gw] = op_p_nufft_up([v u], [Ny Nx], [Ky Kx], [oy*Ny ox*Nx], [Ny/2 Nx/2], nW);
         tend = toc(tstart);
 
         fprintf('Initialization runtime: %ds\n\n', ceil(tend));
