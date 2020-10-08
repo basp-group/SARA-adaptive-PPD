@@ -249,7 +249,7 @@ sol_reweight_v = [];% zeros(0, Ny, Nx);
 %% useful functions for the projection
 % thresholding negative values
 %hardt = @(z) max(real(z), min(-param.im0, 0));
- hardt = @(z) max((z), 0);
+ hardt = @(z) max(real(z), 0);
 
 %soft thresholding operator
 soft = @(z, T) sign(z) .* max(abs(z)-T, 0); 
@@ -620,7 +620,7 @@ function [v1_, u1_, norm1_] = run_par_waverec(v1_, Psit, Psi, prev_xsol, gamma, 
     z = v1_ + r1_;
     T = (gamma  / sigma1_) * weights_;
     v1_ = z - sign(z) .* max(abs(z)-T, 0);
-    u1_ = Psi(weights_ .* v1_);
+    u1_ = Psi(v1_);
 
     % local L1 norm of current solution
     norm1_ = sum(abs(r1_));
