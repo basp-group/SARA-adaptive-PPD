@@ -16,7 +16,12 @@ weights = double(weights(:)); %1/(sigma^2)
 %
 ind2keep =(weights>0).*(flag==0).*(abs(y_I)>0);
 %
-weights = sqrt(weights(ind2keep>0));
+if param.isWeightsFixed2Sigma
+    weights = 1./(weights(ind2keep>0));
+else
+    weights = sqrt(weights(ind2keep>0));
+end
+%
 y_I  = double(y_I(ind2keep>0));
 
 
