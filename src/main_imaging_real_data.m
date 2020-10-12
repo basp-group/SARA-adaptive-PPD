@@ -269,7 +269,7 @@ sigma_noise = sqrt(2);
 [Psiw, Psitw] = op_sp_wlt_basis(wvlt.basis , wvlt.nlevel, Ny, Nx);
 
 %% Noise estimate in the sparsity basis
-bwOp = @(x) At(GMatrix' * x);
+bwOp = @(x) real(At(GMatrix' * x));
 fwOp  = @(x) GMatrix * A(x);
 dirac = zeros(Ny,Nx);
 dirac(Ny/2 +1,Nx/2 +1) =1;
@@ -277,6 +277,7 @@ peakPSF = max(max(bwOp(fwOp(dirac))));
 noise = (randn(nMeasPerCh,1)+1i*(randn(nMeasPerCh,1)))./sqrt(2);
 noise_map = bwOp(noise);
 noiseLevelDict = std(noise_map(:)./peakPSF);
+dirty = bwOp(cell2mat(dataCells))./peakPSF;
 
 fprintf('\nINFO: Noise level in wavelet space %f\n ',noiseLevelDict)
 clear GMatrix noise  noise_map  dirac bwOp fwOp ;
@@ -357,7 +358,8 @@ if doSaveResults
     fitswrite(result_st.sol,fitsSolName);
     fitsResName = [pathResults,resultFileName,'_RESIDUAL.fits'];
     fitswrite(result_st.residualImage,fitsResName);
-    
+    fitsDirtyName = [pathResults,resultFileName,'_DIRTY.fits'];
+    fitswrite(dirty,fitsDirtyName);
     
     save([pathResults,resultFileName,'.mat'],'result_st','param_pdfb_precond','-v7.3')
 end
