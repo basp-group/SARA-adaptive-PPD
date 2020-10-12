@@ -68,6 +68,8 @@ Ny = param_global.Ny;
 pixelSize = param_global.pixelSize;% 'in arcsec'
 obsFreq   = param_global.ObsFreq;% freq in 'Hz'
 imageResolutionStr = param_global.imageResolution;
+fprintf('\nINFO: Observation freq: %f MHz.\n',obsFreq/1E6);
+
 switch imageResolutionStr
     case 'nominal'
         fprintf('\nWARNING: No pixelsize provided by user --> adopting 1.5x instrumental resolution.\n')

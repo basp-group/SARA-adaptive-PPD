@@ -36,7 +36,7 @@ param_global.Ny = 512; %image dim.
 
 param_global.pixelSize = 2.5; % 'in arcsec'
 
-param_global.obsFreq = 4536E6;% freq in 'Hz'
+param_global.ObsFreq = 4536E6;% freq in 'Hz'
 
 param_global.visibilityFileName = '3c391_I00' ;
 
