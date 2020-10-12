@@ -240,7 +240,7 @@ if doGenerateEpsNNLS
 else
     fprintf('\nEstimating L2 bounds --> assuming Chi square distribution\n')
     for jBlk = 1 : nBlocks
-        epsilonVect(jBlk) = sqrt(2*numel(dataCells{jBlk}))./sqrt(2);
+        epsilonVect(jBlk) =sqrt( 2*numel(dataCells{jBlk}) +4*sqrt( numel(dataCells{jBlk}) ) )./sqrt(2);
     end
 end
 l2_ball_definition = 'value';
