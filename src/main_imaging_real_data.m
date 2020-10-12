@@ -54,6 +54,7 @@ if ~isfield(param_global,'flag_save_results' ), param_global.flag_save_results =
 if ~isfield(param_global,'flag_verbose' ), param_global.flag_verbose = 0;  end
 if ~isfield(param_global,'flag_preconditionning' ), param_global.flag_preconditionning = 1;  end
 if ~isfield(param_global,'flag_manual_partitioning' ), param_global.flag_manual_partitioning = 1;  end
+if ~isfield(param_global,'flag_is_weightsFixed2sigma' ), param_global.flag_is_weightsFixed2sigma = 0;  end
 
 %% paths, data specs and imaging params !! CRUCIAL INPUT FROM USER
 pathData = param_global.pathData;
@@ -68,13 +69,20 @@ Ny = param_global.Ny;
 pixelSize = param_global.pixelSize;% 'in arcsec'
 obsFreq   = param_global.ObsFreq;% freq in 'Hz'
 imageResolutionStr = param_global.imageResolution;
-fprintf('\nINFO: Observation freq: %f MHz.\n',obsFreq/1E6);
 
+fprintf('\nINFO: Observation freq: %f MHz.\n',obsFreq/1E6);
 switch imageResolutionStr
     case 'nominal'
         fprintf('\nWARNING: No pixelsize provided by user --> adopting 1.5x instrumental resolution.\n')
     otherwise
         fprintf('\nINFO: Pixelsize provided by user (in arcsec by default): %f asec.\n',pixelSize);
+end
+
+isWeightsFixed2Sigma =param_global.flag_is_weightsFixed2sigma ;
+if isWeightsFixed2Sigma
+    fprintf('\nWARNING: reading weights from data --> SIGMA col loaded\n') ;
+else
+    fprintf('\nINFO: reading weights from data --> WEIGHTS col loaded\n') ;
 end
 
 %% flags
@@ -126,6 +134,8 @@ minGridSize   = min(uvGridSizey,uvGridSizex); %smallest size of the gridcell in 
 param_real_data.pixelSize = pixelSize;% 'in arcsec'
 param_real_data.obsFreq   = obsFreq;% freq in 'Hz'
 param_real_data.imageResolutionStr =imageResolutionStr;
+param_real_data.isWeightsFixed2Sigma = isWeightsFixed2Sigma;
+
 [dataVect, ucorr, vcoor,wcoor, nWw,timeVect] = util_load_real_data(visibilityFileName, param_real_data);
 nMeasPerCh = length(ucorr);
 
@@ -240,7 +250,7 @@ if doGenerateEpsNNLS
 else
     fprintf('\nEstimating L2 bounds --> assuming Chi square distribution\n')
     for jBlk = 1 : nBlocks
-        epsilonVect(jBlk) =sqrt( 2*numel(dataCells{jBlk}) +4*sqrt( numel(dataCells{jBlk}) ) )./sqrt(2);
+        epsilonVect(jBlk) =sqrt(numel(dataCells{jBlk}) +2*sqrt( numel(dataCells{jBlk}) ) );
     end
 end
 l2_ball_definition = 'value';
