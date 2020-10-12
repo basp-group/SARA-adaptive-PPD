@@ -302,6 +302,8 @@ param_pdfb_precond.rel_obj = rel_obj; % stopping criterion
 param_pdfb_precond.max_iter = max_iter; % max number of iterations
 param_pdfb_precond.gamma = l1_reg; % convergence parameter L1 (soft thresholding parameter)
 %--re-weighting-%
+param_pdfb_precond.use_reweight_eps =1;
+
 param_pdfb_precond.reweight_rel_obj = 5e-5; % criterion for performing reweighting
 param_pdfb_precond.reweight_min_steps_rel_obj = 250;
 param_pdfb_precond.reweight_max_reweight_itr = max(500,param_pdfb_precond.max_iter - 500);
