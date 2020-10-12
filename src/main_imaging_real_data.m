@@ -360,6 +360,8 @@ if doSaveResults
     fitswrite(result_st.sol,fitsSolName);
     fitsResName = [pathResults,resultFileName,'_RESIDUAL.fits'];
     fitswrite(result_st.residualImage,fitsResName);
+    fitsResName = [pathResults,resultFileName,'_RESIDUAL_NZ.fits'];
+    fitswrite(result_st.residualImage./peakPSF,fitsResName);
     fitsDirtyName = [pathResults,resultFileName,'_DIRTY.fits'];
     fitswrite(dirty,fitsDirtyName);
     
