@@ -221,12 +221,11 @@ end
 
 %% compute the spectral norm of the measurement operator
 fprintf('Computing operator norms ...\n');
-if doComputeAnorm
-    fprintf('Natural W ...\n');
-    opNorm = op_norm(@(x) GMatrix * A(x), @(x) At(GMatrix' * x), [Ny, Nx], 1e-6, 200, verbosity);
-end
 
-opPrecondNorm = op_norm(@(x) sqrt(cell2mat(aW)) .* (GMatrix * A(x)), @(x) At(GMatrix' * (sqrt(cell2mat(aW)) .* x)), [Ny, Nx], 1e-6, 200, verbosity);
+fprintf('Natural W ...\n');    
+opNorm = op_norm(@(x) GMatrix * A(x), @(x) At(GMatrix' * x), [Ny, Nx], 1e-6, 500, verbosity);
+
+opPrecondNorm = op_norm(@(x) sqrt(cell2mat(aW)) .* (GMatrix * A(x)), @(x) At(GMatrix' * (sqrt(cell2mat(aW)) .* x)), [Ny, Nx], 1e-6, 500, verbosity);
 fprintf('INFO:Preconditioning enabled. Operator''s spectral norm: %f ...\n',opPrecondNorm);
 %clear unnecessary vars at this stage
 clear ucoor vcoor u v  timeVect nW;
@@ -276,7 +275,7 @@ dirac(Ny/2 +1,Nx/2 +1) =1;
 peakPSF = max(max(bwOp(fwOp(dirac))));
 noise = (randn(nMeasPerCh,1)+1i*(randn(nMeasPerCh,1)))./sqrt(2);
 noise_map = bwOp(noise);
-noiseLevelDict = std(noise_map(:)./peakPSF);
+noiseLevelDict = std(noise_map(:)./opNorm);
 dirty = bwOp(cell2mat(dataCells))./peakPSF;
 
 fprintf('\nINFO: Noise level in wavelet space %f\n ',noiseLevelDict)
