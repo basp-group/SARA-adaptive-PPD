@@ -128,13 +128,7 @@ szDataBlk= param_global.sizeDataBlk ;
 wproj.CEnergyL2 = param_global.CEnergyL2 ;
 wproj.GEnergyL2 = param_global.GEnergyL2 ;
 
-%% FoV info
 
-FoVx = pixelSize * Nx *pi/180/3600;
-FoVy = pixelSize * Ny *pi/180/3600;
-uvGridSizex   = 1/(nufft.ox*FoVx);
-uvGridSizey   = 1/(nufft.oy*FoVy);
-minGridSize   = min(uvGridSizey,uvGridSizex); %smallest size of the gridcell in the spatial Fourier domain
 
 %% Get data, uvw coord, weights and time
 
@@ -150,9 +144,16 @@ GCells    = cell(nDataSets,1);
 precondWCells   = cell(nDataSets,1);
 epsilonVect = cell(nDataSets,1);
 for iDataSets =1 :nDataSets
-    [dataVect, ucorr, vcoor,wcoor, nWw,timeVect] = util_load_real_data(visibilityFileName{iDataSets}, param_real_data);
+    [dataVect, ucorr, vcoor,wcoor, nWw,timeVect,pixelSize] = util_load_real_data(visibilityFileName{iDataSets}, param_real_data);
     nMeasPerCh(iDataSets) = length(ucorr);
-    
+    %% FoV info
+    if iDataSets ==1
+       FoVx = pixelSize * Nx *pi/180/3600;
+       FoVy = pixelSize * Ny *pi/180/3600;
+       uvGridSizex   = 1/(nufft.ox*FoVx);
+       uvGridSizey   = 1/(nufft.oy*FoVy);
+       minGridSize   = min(uvGridSizey,uvGridSizex); %smallest size of the gridcell in the spatial Fourier domain
+    end
     %% Preconditioning: compute weights for Projection into the ellipsoids
     if doPreconditionning
         param_precond.N = nFourier; % number of pixels in the image
