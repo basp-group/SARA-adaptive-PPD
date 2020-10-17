@@ -1,4 +1,4 @@
-function [visibilities, ucoorRadians, vcoorRadians,wcoorUnitWavelength, nWeights,time] = util_load_real_data(visibilityFileName, param)
+function [visibilities, ucoorRadians, vcoorRadians,wcoorUnitWavelength, nWeights,time,pixelSize] = util_load_real_data(visibilityFileName, param)
 %% cst
 speedOfLight = 299792458;
 %% read param
