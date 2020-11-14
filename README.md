@@ -21,5 +21,5 @@ git submodule update --init --recursive # update the content of the submodules
 - cloning the repository from scratch
 
 ```bash
-git clone --recurse-submodules https://github.com/basp-group-private/Faceted-Hyper-SARA.git
+git clone --recurse-submodules https://github.com/basp-group-private/SARA-adaptive-ppd.git
 ```
