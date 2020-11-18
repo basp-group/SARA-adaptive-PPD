@@ -315,9 +315,9 @@ dirac(Ny/2 +1,Nx/2 +1) =1;
 peakPSF = max(max(bwOp(fwOp(dirac))));
 noise = (randn(nMeasPerCh,1)+1i*(randn(nMeasPerCh,1)))./sqrt(2);
 noise_map = bwOp(noise);
-noiseLevelDict = std(noise_map(:)./opNorm);
+%noiseLevelDict = std(noise_map(:)./opNorm);
 dirty = bwOp(cell2mat(dataCells))./peakPSF;
-
+noiseLevelDict = norm(noise_map(:)./peakPSF)/norm(dirty(:));
 fprintf('\nINFO: Noise level in wavelet space %f\n ',noiseLevelDict)
 clear  noise  noise_map  dirac bwOp fwOp ;
 %% rearrange the G matrix
