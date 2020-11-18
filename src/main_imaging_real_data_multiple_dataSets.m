@@ -137,11 +137,11 @@ param_real_data.obsFreq   = obsFreq;% freq in 'Hz'
 param_real_data.imageResolutionStr =imageResolutionStr;
 param_real_data.isWeightsFixed2Sigma = isWeightsFixed2Sigma;
 nMeasPerCh = zeros(nDataSets,1);
-jBlkStart = 0;
 
 dataCells = cell(nDataSets,1);
 GCells    = cell(nDataSets,1);
 precondWCells   = cell(nDataSets,1);
+FourierIdxWCells = cell(nDataSets,1);
 epsilonVect = cell(nDataSets,1);
 for iDataSets =1 :nDataSets
     [dataVect, ucorr, vcoor,wcoor, nWw,timeVect,pixelSize] = util_load_real_data(visibilityFileName{iDataSets}, param_real_data);
@@ -202,15 +202,15 @@ for iDataSets =1 :nDataSets
     %clear unnecessary vars at this stage
     clear ucoor vcoor timeVect;
     %% measurement operator initialization
-    fprintf('\nInitializing the NUFFT operator\n');
+    fprintf('\nInitializing the NUFFT operator');
     tstart = tic;
-    [A, At, GCells{iDataSets}, W{iDataSets}, ~] = op_p_nufft_up([v u], [Ny Nx], [nufft.Ky nufft.Kx],...
+    [A, At, GCells{iDataSets}, FourierIdxWCells{iDataSets}, ~] = op_p_nufft([v u], [Ny Nx], [nufft.Ky nufft.Kx],...
         [nufft.oy*Ny nufft.ox*Nx], [Ny/2 Nx/2], nW);
     tend = toc(tstart);
     %clear unnecessary vars at this stage
     clear u v  timeVect nW;
 
-    fprintf('Initialization runtime: %ds\n\n', ceil(tend));
+    fprintf('Initialization runtime: %ds\n', ceil(tend));
     
     %% w-correction
     %:AD:  check if w correction is necessary
@@ -223,15 +223,19 @@ for iDataSets =1 :nDataSets
             doWProjection = 0;
         end
     end
-    
+    for jBlk = 1:nBlocks
+        GBis = sparse(size(GCells{iDataSets}{jBlk},1), nFourier);
+        GBis(:,FourierIdxWCells{iDataSets}{jBlk}) = GCells{iDataSets}{jBlk};
+        GCells{iDataSets}{jBlk} = GBis;
+    end
     if  doWProjection
         fprintf('\nINFO: w-correction is enabled \n')
         param_wterm.FoV =[FoVy; FoVx];
         param_wterm.ox = [nufft.oy ;nufft.ox];
         param_wterm.gImDims = [Ny; Nx];
         % update each block of the G matrix
-        for jBlk = 1:jBlkStart
-            GCells{nDataSets}{jBlk} =  getWprojGmatrix(GCells{nDataSets}{jBlk},...
+        for jBlk = 1:nBlocks
+            GCells{iDataSets}{jBlk} =  getWprojGmatrix(GCells{iDataSets}{jBlk},...
                 wcoor(uvidx{jBlk}),param_wterm,wproj.CEnergyL2,wproj.GEnergyL2);
         end        
     end
@@ -243,7 +247,7 @@ for iDataSets =1 :nDataSets
     if doGenerateEpsNNLS
         %Run NNLS for to initialise the l2 bound
         param_nnls.verbose = 0.5; % print log or not
-        param_nnls.rel_obj = 1e-4; % stopping criterion
+        param_nnls.rel_obj = 1e-3; % stopping criterion
         param_nnls.max_iter = 1000; % max number of iterations
         param_nnls.sol_steps = [inf]; % saves images at the given iterations
         param_nnls.beta = 1;
@@ -270,10 +274,10 @@ for iDataSets =1 :nDataSets
     
 end
 %% combine data and measurement operator
-dataCells =  vertcat(dataCells{:});
+dataCells = vertcat(dataCells{:});
 GCells    = vertcat(GCells{:});
-precondWCells   = vertcat(precondWCells{:});
- W= vertcat(W{:});
+precondWCells = vertcat(precondWCells{:});
+FourierIdxWCells = vertcat(FourierIdxWCells{:});
 %% Set l2 constraints
 epsilonVect = vertcat(epsilonVect{:});
 
@@ -289,17 +293,18 @@ sigma_noise = sqrt(2);
     use_same_stop_criterion, param_l2_ball);
 %% compute the spectral norm of the measurement operator
 fprintf('Computing operator norms ...\n');
-if doComputeAnorm
-    fprintf('Natural W ...\n');
-    opNorm = op_norm(@(x) cell2mat(GCells) * A(x), @(x) At(cell2mat(GCells)' * x), [Ny, Nx], 1e-6, 200, verbosity);
-end
+dummyG = cell2mat(GCells);
+fprintf('Natural W ...\n');
+opNorm = op_norm(@(x) dummyG * A(x), @(x) At(dummyG' * x), [Ny, Nx], 1e-6, 200, verbosity);
 
-opPrecondNorm = op_norm(@(x) sqrt(cell2mat(precondWCells)) .* (cell2mat(GCells) * A(x)), ...
-    @(x) At(cell2mat(GCells)' * (sqrt(cell2mat(precondWCells)) .* x)), ...
-    [Ny, Nx], 1e-6, 20, verbosity);
+fprintf('Precond. W ...\n');
+dummyPrecondWCells = sqrt(cell2mat(precondWCells));
+opPrecondNorm = op_norm(@(x) dummyPrecondWCells .* (dummyG * A(x)), ...
+    @(x) At(dummyG' * (dummyPrecondWCells .* x)), ...
+    [Ny, Nx], 1e-6, 500, verbosity);
 fprintf('INFO:Preconditioning enabled. Operator''s spectral norm: %f ...\n',opPrecondNorm);
 %clear unnecessary vars at this stage
-
+clear dummyG dummyPrecondWCells;
 
 %% Noise estimate in the sparsity basis
 bwOp = @(x) real(At(cell2mat(GCells)' * x));
@@ -310,12 +315,19 @@ dirac(Ny/2 +1,Nx/2 +1) =1;
 peakPSF = max(max(bwOp(fwOp(dirac))));
 noise = (randn(nMeasPerCh,1)+1i*(randn(nMeasPerCh,1)))./sqrt(2);
 noise_map = bwOp(noise);
-noiseLevelDict = std(noise_map(:)./peakPSF);
+noiseLevelDict = std(noise_map(:)./opNorm);
 dirty = bwOp(cell2mat(dataCells))./peakPSF;
 
 fprintf('\nINFO: Noise level in wavelet space %f\n ',noiseLevelDict)
-clear GMatrix noise  noise_map  dirac bwOp fwOp ;
-
+clear  noise  noise_map  dirac bwOp fwOp ;
+%% rearrange the G matrix
+for jBlk = 1:length(GCells)
+    FourierIdxWCells{jBlk} = false(nFourier, 1);
+    GBis =  GCells{jBlk};
+    FourierIdxWCells{jBlk} = any( GBis, 1).';
+    GCells{jBlk}= GBis(:, FourierIdxWCells{jBlk});
+    GBis = [];
+end
 
 %% sparsity operator initialization
 [Psi, Psit] = op_p_sp_wlt_basis(wvlt.basis , wvlt.nlevel, Ny, Nx);
@@ -342,12 +354,11 @@ param_pdfb_precond.max_iter = max_iter; % max number of iterations
 param_pdfb_precond.gamma = l1_reg; % convergence parameter L1 (soft thresholding parameter)
 %--re-weighting-%
 param_pdfb_precond.use_reweight_eps =1;
-
 param_pdfb_precond.reweight_rel_obj = 5e-5; % criterion for performing reweighting
-param_pdfb_precond.reweight_min_steps_rel_obj = 250;
-param_pdfb_precond.reweight_max_reweight_itr = max(500,param_pdfb_precond.max_iter - 500);
-param_pdfb_precond.reweight_alpha = ones(1,wvlt.nDictionnaries) ;
-param_pdfb_precond.reweight_alpha_ff = (0.5*(sqrt(5)-1)) * ones(1,wvlt.nDictionnaries);
+param_pdfb_precond.reweight_min_steps_rel_obj = 100;
+param_pdfb_precond.reweight_max_reweight_itr = param_pdfb_precond.max_iter - 100;% max(500,param_pdfb_precond.max_iter - 100);
+param_pdfb_precond.reweight_alpha = 10*noiseLevelDict *ones(1,wvlt.nDictionnaries) ;
+param_pdfb_precond.reweight_alpha_ff = (0.5*(sqrt(5)-1));
 param_pdfb_precond.reweight_abs_of_max = inf;
 param_pdfb_precond.total_reweights = 20;
 param_pdfb_precond.reweightBound = noiseLevelDict;
@@ -356,30 +367,37 @@ param_pdfb_precond.reweightBound = noiseLevelDict;
 param_pdfb_precond.use_adapt_bound_eps = doAdaptiveEpsilonUpdate;
 param_pdfb_precond.adapt_bound_steps = 100;
 param_pdfb_precond.adapt_bound_rel_obj = 1e-4;
-param_pdfb_precond.adapt_bound_tol = 1e-3;
-param_pdfb_precond.adapt_bound_start = 200;
+param_pdfb_precond.adapt_bound_tol = 1e-2;
+param_pdfb_precond.adapt_bound_start = 250;
 
 
 %% run adaptive PPD to compute the solution
 fprintf('Starting algorithm:\n\n');
 dwtmode('per');
 tstart_a = tic;
-fprintf(' Running Adaptive PPD \n');
+fprintf('Running Adaptive PPD \n');
 [result_st.sol, result_st.L1_v, result_st.L1_vp, ...
     result_st.L2_v,result_st.L2_vp, result_st.delta_v,...
     result_st.sol_v, result_st.no_sub_itr_v, ~, ~, ...
     result_st.sol_reweight_v] ...
     = solver_adaptive_ppd_fb(dataCells,...
     epsilonT, epsilonTs, epsilon, epsilons, ...
-    A, At, GCells, precondWCells, W, ...
+    A, At, GCells, precondWCells, FourierIdxWCells, ...
     Psi, Psit, Psiw, Psitw, ...
     param_pdfb_precond);
 
 tend = toc(tstart_a);
 result_st.runtime = tend;
 result_st.no_itr = length(result_st.L1_v);
-
-result_st.residualImage= real(At(cell2mat(GCells)'*(dataVect-cell2mat(GCells)*(A(result_st.sol)))));
+try
+    for jBlk = 1:length(GCells)
+        GBis = sparse(size(GCells{jBlk},1), nFourier);
+        GBis(:,FourierIdxWCells{jBlk}) = GCells{jBlk};
+        GCells{jBlk} = GBis;
+    end
+    GMatrix = cell2mat(GCells);    
+    result_st.residualImage= real(At(GMatrix'*(dataVect-GMatrix*(A(result_st.sol)))));
+end
 
 fprintf(' Adaptive PPD runtime: %ds\n\n', ceil(tend));
 
