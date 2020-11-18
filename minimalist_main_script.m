@@ -1,3 +1,8 @@
+%% This is a script for running adaptive PPD on real data sets
+% The data used here are observations of the supernova remnant 3C391 using the VLA
+% For more details please refer to following VLA tutorial
+% https://casaguides.nrao.edu/index.php/VLA_Continuum_Tutorial_3C391-CASA5.0.0
+%calibrated data can be found here https://casa.nrao.edu/Data/EVLA/3C391/EVLA_3C391_FinalCalibratedMosaicMS.tgz
 clear ; clc; close all;
 %% setting up paths
 pathProject  = pwd;
@@ -36,16 +41,16 @@ param_global.Ny = 512; %image dim.
 param_global.pixelSize = 1.98; % 'in arcsec'
 param_global.ObsFreq = 1e9;% freq in 'Hz'
 
-param_global.visibilityFileName = {'data_uv_arwa_3c353_6'} ;%supports multiple datasets
-param_global.flag_is_weightsFixed2sigma = 1; % 'weights' in the data file corresponds to SIGMA.
+param_global.visibilityFileName = {'data_uv_arwa_3c353_6'} ;%supports multiple datasets, e.g.  {'data1.mat','data2.mat'}
+param_global.flag_is_weightsFixed2sigma = 1; % 1: 'weights' in the data file corresponds to SIGMA. 0: 'weights' correspond to the inverse of the VARIANCE
 
 %solver
 param_global.l1_reg = 1e-4;% soft-thresholding param. of SARA
 param_global.max_iter = 10000;
-param_global.rel_obj = 1e-6; 
+param_global.rel_obj = 5e-6; 
 
 param_global.flag_adaptive_l2bounds =0 ; % no adaptive epsilon if noise statistics are known (always the case for sims)
-param_global.sizeDataBlk = 500000; % not compulsory: set data block sizes in the solver
+param_global.sizeDataBlk = 200000; % not compulsory: set data block sizes in the solver
 
 
 %% run Adaptive PPD
