@@ -379,14 +379,14 @@ for t = 1:param.max_iter
     for q = 1:R
         
         %tic
-        residual_data_block =T{q}*ns;
+        residual_data_block =T{q}*ns(W{q});
         block_l2norm{q} = norm(residual_data_block-y{q});
         
         [proj{q}, no_sub_itr{q}] = solver_proj_elipse_fb(1 ./ pU{q} .* v2{q}, residual_data_block, y{q}, pU{q}, epsilont{q}, proj{q}, elipse_proj_max_iter, elipse_proj_min_iter, elipse_proj_eps);
         v2{q} = v2{q} + pU{q} .* (residual_data_block -  proj{q});
         
         
-        uu = uu +T{q}'*v2{q} ; %  uu(W{q}) = uu(W{q}) + u2{q};
+        uu(W{q}) = uu(W{q}) +T{q}'*v2{q} ; 
         %toc
         
     end
@@ -448,7 +448,6 @@ for t = 1:param.max_iter
     % ADAPTIVE bound update on each block
     
     %% update the primal gradient
-    
     g1 = (sigma2(1) ./sigma1(1))*(At(uu));
     clear uu;
     for k = 1:P
@@ -530,7 +529,7 @@ for t = 1:param.max_iter
                 fprintf('\n\n\n\n\n\n\n No more reweights \n\n\n\n\n');
                 
             end
-            sol_v{reweight_step_count} =xsol;
+%             sol_v{reweight_step_count} =xsol;
             reweight_step_count = reweight_step_count + 1;
             reweight_last_step_iter = t;
             reweight_step_count_since_best_bound_search = reweight_step_count_since_best_bound_search + 1;
