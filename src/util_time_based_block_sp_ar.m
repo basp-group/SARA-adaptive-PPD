@@ -1,4 +1,4 @@
- function output =util_time_based_block_sp_arv1(time,param)
+ function output =util_time_based_block_sp_ar(time,param)
 
 if ~isfield(param,'verbose')
     verbose =0;
@@ -25,8 +25,14 @@ output.block = [] ;
 %% init
 param.pos=[0; param.pos(:)];
 %% block size interval
-minBlkSz = floor(param.size * (1-lowerTolBlkSz));
-maxBlkSz = floor(param.size * (1+upperTolBlkSz));
+%% block size interval
+if param.size<param.pos(end)
+   minBlkSz = floor(param.size * (1-lowerTolBlkSz));
+   maxBlkSz = floor(param.size * (1+upperTolBlkSz));
+else
+    minBlkSz =param.size ;
+    maxBlkSz =param.size ;
+end
 
 fprintf("Block size should be in [%d %d]\n",(1-tolBlkSzPc)*minBlkSz,(1+tolBlkSzPc)*maxBlkSz)
 
