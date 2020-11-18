@@ -12,8 +12,8 @@ pathLibAPPD=[pathProject,'src',filesep];
 addpath(genpath(pathLibAPPD));
 
 % PPD: Onose et al 2016
-pathLibSARA = [pathProject,'lib',filesep, 'SARA-PPD-master',filesep];
-addpath(genpath(pathLibSARA));
+pathLibPPD = [pathProject,'lib',filesep, 'utils',filesep];
+addpath(genpath(pathLibPPD));
 
 %W-correction: dabbech et al 2017
 pathWCorrection = [pathProject,'lib',filesep,'wproj_utilities',filesep];
