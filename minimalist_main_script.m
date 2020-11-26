@@ -17,11 +17,11 @@ pathLibAPPD=[pathProject,'src',filesep];
 addpath(genpath(pathLibAPPD));
 
 % PPD: Onose et al 2016
-pathLibPPD = [pathProject,'lib',filesep, 'utils',filesep];
+pathLibPPD = [pathProject,'lib',filesep,'measurement-operator',filesep, 'utils',filesep];
 addpath(genpath(pathLibPPD));
 
 %W-correction: dabbech et al 2017
-pathWCorrection = [pathProject,'lib',filesep,'wproj_utilities',filesep];
+pathWCorrection = [pathProject,'lib',filesep,'measurement-operator',filesep,'wproj_utilities',filesep];
 addpath(pathWCorrection);
 
 % DATA dir.
