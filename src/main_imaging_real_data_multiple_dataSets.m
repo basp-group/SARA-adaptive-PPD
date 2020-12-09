@@ -272,6 +272,8 @@ for iDataSets =1 :nDataSets
 end
 %% combine data and measurement operator
 dataCells = vertcat(dataCells{:});
+dataVect  =cell2mat(dataCells);
+
 GCells    = vertcat(GCells{:});
 precondWCells = vertcat(precondWCells{:});
 FourierIdxWCells = vertcat(FourierIdxWCells{:});
