@@ -179,6 +179,7 @@ for iDataSets =1 :nDataSets
         param_block_structure.use_manual_partitioning = doSnapshotsBlocking;
         param_block_structure.use_equal_partitioning  = 0;
     else
+        dataPartitions =nMeasPerCh;
         param_block_structure.use_equal_partitioning = 1;
         param_block_structure.equal_partitioning_no = floor(nMeasPerCh/szDataBlk);
         param_block_structure.use_manual_partitioning=0;
