@@ -181,7 +181,7 @@ for iDataSets =1 :nDataSets
     else
         dataPartitions =nMeasPerCh;
         param_block_structure.use_equal_partitioning = 1;
-        param_block_structure.equal_partitioning_no = floor(nMeasPerCh/szDataBlk);
+        param_block_structure.equal_partitioning_no = max( floor(nMeasPerCh/szDataBlk), 1);
         param_block_structure.use_manual_partitioning=0;
     end
     param_block_structure.use_density_partitioning = 0;
