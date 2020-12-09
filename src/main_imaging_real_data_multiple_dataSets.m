@@ -411,13 +411,12 @@ if doSaveResults
     fitsSolName = [pathResults,resultFileName,'_SOL.fits'];
     fitswrite(result_st.sol,fitsSolName);
     try
-    result_st.residualImage= real(At(cell2mat(GCells)'*(dataVect-cell2mat(GCells)*(A(result_st.sol)))));
 
     fitsResName = [pathResults,resultFileName,'_RESIDUAL.fits'];
     fitswrite(result_st.residualImage,fitsResName);
     fitsResName = [pathResults,resultFileName,'_RESIDUAL_NZ.fits'];
-    end
     fitswrite(result_st.residualImage./peakPSF,fitsResName);
+    end
     fitsDirtyName = [pathResults,resultFileName,'_DIRTY.fits'];
     fitswrite(dirty,fitsDirtyName);
     
