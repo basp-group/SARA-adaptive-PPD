@@ -6,7 +6,7 @@ This repository contains a set of MATLAB scripts associated with the following p
 
 **Setup**: if needed, configure the paths in `minimalist_script.m` before running.
 
-**Dependencies:** the present codes depends on the content of the `measurement-operator` github repository, loaded as a github `submodule`. This module contains codes associated with the following publications
+**Dependencies:** the present codes depend on the content of the `measurement-operator` github repository, loaded as a github `submodule`. This module contains codes associated with the following publications
 
 > J. A. Fessler and B. P. Sutton, Nonuniform Fast Fourier Transforms Using Min-Max Interpolation, *IEEE Trans. Image Process.*, vol. 51, n. 2, pp. 560--574, Feb. 2003.
 >
