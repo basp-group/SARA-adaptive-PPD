@@ -1,25 +1,28 @@
 # SARA-adaptive-ppd
 
-This code depends on ./irt (Fessler 2003) and ./sara-ppd (Onose et al. 2017).
-Make sure to change their associated  paths in minimalist_script.m
+This repository contains a set of MATLAB scripts associated with the following publication:
 
-**Dependencies:** the present codes includes a slightly modified version of the MATLAB NUFFT algorithm available at http://web.eecs.umich.edu/~fessler/irt/fessler.tgz, described in
+> A. Onose, A. Dabbech and Y. Wiaux, [An accelerated splitting algorithm for radio-interferometric imaging: when natural and uniform weighting meet](http://dx.doi.org/10.1093/mnras/stx755), *Mon. Not. Roy. Astron. Soc.*, 469(1):938-949, 2017.
 
-> J. A. Fessler and B. P. Sutton - 
-<strong>Nonuniform Fast Fourier Transforms Using Min-Max Interpolation</strong>, <em>IEEE Trans. Image Process.</em>, vol. 51, n. 2, pp. 560--574, Feb. 2003.
+**Setup**: if needed, configure the paths in `minimalist_script.m` before running.
 
-**Installation** To properly clone the project with the submodules, you may need to do follow one of set of instructions:
+**Dependencies:** the present codes depends on the content of the `measurement-operator` github repository, loaded as a github `submodule`. This module contains codes associated with the following publications
 
-- updating from an existing `SARA-adaptive-ppd` repository:
+> J. A. Fessler and B. P. Sutton, Nonuniform Fast Fourier Transforms Using Min-Max Interpolation, *IEEE Trans. Image Process.*, vol. 51, n. 2, pp. 560--574, Feb. 2003.
+> A. Dabbech, L. Wolz, L. Pratley, J. D. McEwen and Y. Wiaux, [The w-effect in interferometric imaging: from a fast sparse measurement operator to superresolution](http://dx.doi.org/10.1093/mnras/stx1775), *Mon. Not. Roy. Astron. Soc.*, 471(4):4300-4313, 2017.
+
+**Installation** To properly clone the project with the content of the submodule, you may need to do follow one of set of instructions:
+
+- cloning the repository
+
+```bash
+git clone --recurse-submodules https://github.com/basp-group-private/SARA-adaptive-ppd.git
+```
+
+- updating from an existing `SARA-adaptive-ppd` repository
 
 ```bash
 git pull
 git submodule sync --recursive # update submodule address, in case the url has changed
 git submodule update --init --recursive # update the content of the submodules
-```
-
-- cloning the repository from scratch
-
-```bash
-git clone --recurse-submodules https://github.com/basp-group-private/SARA-adaptive-ppd.git
 ```
