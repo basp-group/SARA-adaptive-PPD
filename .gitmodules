@@ -1,3 +1,3 @@
-[submodule "measurement-operator"]
-	path = measurement-operator
+[submodule "lib/measurement-operator"]
+	path = lib/measurement-operator
 	url = https://github.com/basp-group-private/measurement-operator.git
