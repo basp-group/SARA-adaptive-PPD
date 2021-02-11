@@ -26,4 +26,5 @@ git clone --recurse-submodules https://github.com/basp-group-private/SARA-adapti
 git pull
 git submodule sync --recursive # update submodule address, in case the url has changed
 git submodule update --init --recursive # update the content of the submodules
+git submodule update --remote --merge # fetch and merge latest state of the submodule
 ```
