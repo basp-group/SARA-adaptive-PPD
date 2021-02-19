@@ -17,7 +17,7 @@ This repository contains a set of MATLAB scripts associated with the following p
 - cloning the repository
 
 ```bash
-git clone --recurse-submodules https://github.com/basp-group-private/SARA-adaptive-ppd.git
+git clone --recurse-submodules https://github.com/basp-group/SARA-adaptive-ppd.git
 ```
 
 - updating from an existing `SARA-adaptive-ppd` repository
