@@ -1,8 +1,10 @@
 # SARA-adaptive-ppd
 
-This repository contains a set of MATLAB scripts associated with the following publication:
+The current branch (`master`) contains a set of MATLAB scripts, published as an evolution to the codes originally published for the approach described in
 
 > A. Onose, A. Dabbech and Y. Wiaux, [An accelerated splitting algorithm for radio-interferometric imaging: when natural and uniform weighting meet](http://dx.doi.org/10.1093/mnras/stx755), *Mon. Not. Roy. Astron. Soc.*, 469(1):938-949, 2017.
+
+The version of the codes released when the paper was published are available on the `v0` branch.
 
 **Setup**: if needed, configure the paths in `minimalist_script.m` before running.
 
