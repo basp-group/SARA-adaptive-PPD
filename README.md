@@ -5,7 +5,7 @@ Matlab code associated with the method developed in
 The code also uses a set of MATLAB scripts, published
 > A. Onose, A. Dabbech and Y. Wiaux, [An accelerated splitting algorithm for radio-interferometric imaging: when natural and uniform weighting meet](http://dx.doi.org/10.1093/mnras/stx755), *Mon. Not. Roy. Astron. Soc.*, 469(1):938-949, 2017.
 
-The version of the codes released when the paper was published are available on the `v0` branch.
+**Note**: The version of the code released with the paper publication is available on the `v0` branch.
 
 **Setup**: if needed, configure the paths in `minimalist_script.m` before running.
 
