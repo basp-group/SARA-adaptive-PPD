@@ -1,7 +1,8 @@
 # SARA-adaptive-ppd
+Matlab code associated with the method developed in  
+> A. Dabbech, A. Onose, A. Abdulaziz, R. A. Perley, O. M. Smirnov, Y. Wiaux, [Cygnus A super-resolved via convex optimization from VLA data](https://doi.org/10.1093/mnras/sty372), *Mon. Not. Roy. Astron. Soc.*, 476(3):2853–2866, 2018.
 
-The current branch (`master`) contains a set of MATLAB scripts, published as an evolution to the codes originally published for the approach described in
-
+The code also uses a set of MATLAB scripts, published
 > A. Onose, A. Dabbech and Y. Wiaux, [An accelerated splitting algorithm for radio-interferometric imaging: when natural and uniform weighting meet](http://dx.doi.org/10.1093/mnras/stx755), *Mon. Not. Roy. Astron. Soc.*, 469(1):938-949, 2017.
 
 The version of the codes released when the paper was published are available on the `v0` branch.
